@@ -1,3 +1,3 @@
-# Threejs-Jurney
+# Threejs-Journey
 
-My jurney through the [Threejs-jurney](https://threejs-journey.com/) lessons.
+My jurney through the [Threejs-journey](https://threejs-journey.com/) lessons.
