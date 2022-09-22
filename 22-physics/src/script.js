@@ -178,55 +178,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Sounds
  */
 const audioListener = new THREE.AudioListener();
-const sound = new THREE.PositionalAudio(audioListener);
 
 camera.add(audioListener);
-const hitSound = new THREE.Audio(audioListener);
-// scene.add(hitSound);
 
 const audioLoader = new THREE.AudioLoader();
 
-audioLoader.load('/sounds/hit.mp3', function (audioBuffer) {
-    hitSound.setBuffer(audioBuffer);
-    hitSound.setLoop(true);
-    hitSound.setVolume(1);
-    // hitSound.hasPlaybackControl = true
-    // hitSound.autoplay = true
-    // hitSound.setRefDistance(100);
-},
-    // onProgress callback
-    function (xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
 
-    // onError callback
-    function (err) {
-        console.log('An error happened');
-    })
-
-
-// sound.set(hitSound)
-sound.setRefDistance(1000);
-// hitSound.play()
-// const hitSound = new Audio('/sounds/hit.mp3')
-
-function isCollider(obj) {
-    return
-}
 
 const playHitSound = (collision) => {
     const impactStrength = collision.contact.getImpactVelocityAlongNormal()
-    // console.log(collision.contact.bi.id)
     let collidingObj = objectsToUpdate.find(e => e.body.id === collision.contact.bi.id)
-    // console.log(collidingObj)
 
-    // console.log(objectsToUpdate.find(e => console.log(e.body.id)))
+    if (impactStrength > 0.2) {
 
-    if (impactStrength > 0) {
-        // hitSound.volume = Math.random()
-        // hitSound.currentTime = 0
-        // hitSound.stop()
-        // hitSound.play()
+        collidingObj.mesh.children[0].setVolume(impactStrength / 6)
         collidingObj.mesh.children[0].play()
     }
 }
@@ -252,12 +217,11 @@ const createSphere = (radius, position) => {
         )
         mesh.castShadow = true
         mesh.position.copy(position)
-        mesh.add(sound)
         scene.add(mesh)
 
         const audio = new THREE.PositionalAudio(audioListener);
         audio.setBuffer(buffer);
-        audio.setRefDistance(20)
+        audio.setRefDistance(3)
         mesh.add(audio)
 
         const shape = new CANNON.Sphere(radius)
@@ -275,16 +239,12 @@ const createSphere = (radius, position) => {
 
         objectsToUpdate.push({
             mesh: mesh,
-            body: body
+            body: body,
+            audio: audio
         })
     },)
 
-
-
 }
-createSphere(0.5, { x: 0, y: 3, z: 0 })
-// createSphere(0.5, { x: 1.5, y: 3, z: 0 })
-// createSphere(0.5, { x: 1.5, y: 3, z: 1.5 })
 
 debugObject.createSphere = () => {
     createSphere(
